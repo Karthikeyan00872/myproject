@@ -1,25 +1,927 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>karthikeyan007</title>
+    <title>Digital Collage Notice Board</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        *{
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        body{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+
+        :root {
+            --urgent-red: #ff4757;
+            --opportunity-yellow: #ffd32a;
+            --academic-green: #05c46b;
+            --social-blue: #0fbcf9;
+            --creative-purple: #a55eea;
+            --fun-orange: #ff9f1a;
+            --board-bg: #f1f2f6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--urgent-red), var(--opportunity-yellow), var(--academic-green), var(--social-blue), var(--creative-purple), var(--fun-orange));
+        }
+
+        .header h1 {
+            font-size: 3.2rem;
+            color: #2d3436;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+            color: #636e72;
+            font-weight: 400;
+        }
+
+        /* Main Board */
+        .board-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 15px var(--shadow);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            margin-right: 15px;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        /* Color-coded sections */
+        .urgent { border-top: 6px solid var(--urgent-red); }
+        .urgent .section-header { border-bottom-color: var(--urgent-red); }
+
+        .opportunity { border-top: 6px solid var(--opportunity-yellow); }
+        .opportunity .section-header { border-bottom-color: var(--opportunity-yellow); }
+
+        .academic { border-top: 6px solid var(--academic-green); }
+        .academic .section-header { border-bottom-color: var(--academic-green); }
+
+        .social { border-top: 6px solid var(--social-blue); }
+        .social .section-header { border-bottom-color: var(--social-blue); }
+
+        .creative { border-top: 6px solid var(--creative-purple); }
+        .creative .section-header { border-bottom-color: var(--creative-purple); }
+
+        .fun { border-top: 6px solid var(--fun-orange); }
+        .fun .section-header { border-bottom-color: var(--fun-orange); }
+
+        /* Notices */
+        .notices-container {
+            min-height: 250px;
+        }
+
+        .notice {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .notice:hover {
+            background: #edf2f7;
+        }
+
+        .notice-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .notice-date {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+
+        .notice-content {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .notice-contact {
+            font-size: 0.85rem;
+            color: #3498db;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .notice-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .pin {
+            position: absolute;
+            top: -8px;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            background: #b2bec3;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .pin::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 10px;
+            height: 10px;
+            background: #636e72;
+            border-radius: 50%;
+        }
+
+        /* Interactive Elements */
+        .interactive-section {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 15px var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .interactive-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #2d3436;
+        }
+
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .interactive-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .interactive-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .interactive-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+
+        .interactive-item h3 {
+            margin-bottom: 10px;
+            color: #2d3436;
+        }
+
+        /* Form */
+        .add-notice-form {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 15px var(--shadow);
+            margin-top: 30px;
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2d3436;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        input, select, textarea {
+            padding: 12px 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #74b9ff;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .board-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .interactive-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <div>
-        Name<input type="text"><br>
-         roll<input type="number" name="" id=""><br>
-         <input type="radio" name="a" id="">male <input type="radio" name="a" id="">female
-    </div>   
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>COLLAGE CONNECTION</h1>
+            <h2>Stick. Share. Inspire.</h2>
+        </header>
+
+        <!-- Main Board -->
+        <div class="board-container">
+            <!-- Urgent/Updates Section -->
+            <section class="section urgent">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <h2 class="section-title">Urgent & Updates</h2>
+                </div>
+                <div class="notices-container" id="urgent-notices">
+                    <!-- Notices will be added here dynamically -->
+                </div>
+            </section>
+
+            <!-- Opportunities Section -->
+            <section class="section opportunity">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-bullseye"></i></div>
+                    <h2 class="section-title">Opportunities</h2>
+                </div>
+                <div class="notices-container" id="opportunity-notices">
+                    <!-- Notices will be added here dynamically -->
+                </div>
+            </section>
+
+            <!-- Academic Section -->
+            <section class="section academic">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h2 class="section-title">Academic</h2>
+                </div>
+                <div class="notices-container" id="academic-notices">
+                    <!-- Notices will be added here dynamically -->
+                </div>
+            </section>
+
+            <!-- Social Section -->
+            <section class="section social">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-users"></i></div>
+                    <h2 class="section-title">Social & Community</h2>
+                </div>
+                <div class="notices-container" id="social-notices">
+                    <!-- Notices will be added here dynamically -->
+                </div>
+            </section>
+
+            <!-- Creative Section -->
+            <section class="section creative">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-palette"></i></div>
+                    <h2 class="section-title">Creative Corner</h2>
+                </div>
+                <div class="notices-container" id="creative-notices">
+                    <!-- Notices will be added here dynamically -->
+                </div>
+            </section>
+
+            <!-- Fun Section -->
+            <section class="section fun">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-laugh-beam"></i></div>
+                    <h2 class="section-title">Fun & Community</h2>
+                </div>
+                <div class="notices-container" id="fun-notices">
+                    <!-- Notices will be added here dynamically -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Interactive Elements Section -->
+        <section class="interactive-section">
+            <h2 class="interactive-title">Interactive Elements</h2>
+            <div class="interactive-grid">
+                <div class="interactive-item" onclick="openPoll()">
+                    <div class="interactive-icon"><i class="fas fa-poll"></i></div>
+                    <h3>Weekly Poll</h3>
+                    <p>Vote on this week's question</p>
+                </div>
+                <div class="interactive-item" onclick="openSkillShare()">
+                    <div class="interactive-icon"><i class="fas fa-hands-helping"></i></div>
+                    <h3>Skill Share</h3>
+                    <p>Offer or request skills</p>
+                </div>
+                <div class="interactive-item" onclick="openCollaboration()">
+                    <div class="interactive-icon"><i class="fas fa-user-friends"></i></div>
+                    <h3>Collaboration Corner</h3>
+                    <p>Find project partners</p>
+                </div>
+                <div class="interactive-item" onclick="openChallenge()">
+                    <div class="interactive-icon"><i class="fas fa-trophy"></i></div>
+                    <h3>Weekly Challenge</h3>
+                    <p>Join the creative challenge</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Notice Form -->
+        <section class="add-notice-form">
+            <h2 class="form-title">Add a New Notice</h2>
+            <form id="noticeForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="title">Notice Title</label>
+                        <input type="text" id="title" required placeholder="Enter notice title">
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="">Select a category</option>
+                            <option value="urgent">Urgent & Updates</option>
+                            <option value="opportunity">Opportunities</option>
+                            <option value="academic">Academic</option>
+                            <option value="social">Social & Community</option>
+                            <option value="creative">Creative Corner</option>
+                            <option value="fun">Fun & Community</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Info</label>
+                        <input type="text" id="contact" required placeholder="Email or phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Deadline (if any)</label>
+                        <input type="date" id="date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="content">Notice Content</label>
+                    <textarea id="content" required placeholder="Enter the full notice content here..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Pin to Notice Board</button>
+            </form>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Digital Collage Notice Board | Made with <i class="fas fa-heart" style="color:#ff4757;"></i> for the college community</p>
+            <p>Automatically removes old notices after 7 days</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample notices data
+        const sampleNotices = {
+            urgent: [
+                {
+                    id: 1,
+                    title: "Library Closure Tomorrow",
+                    date: "2023-10-28",
+                    content: "Main library will be closed for maintenance tomorrow. All due dates extended by one day.",
+                    contact: "library@college.edu"
+                },
+                {
+                    id: 2,
+                    title: "Deadline Extended: Scholarship Forms",
+                    date: "2023-11-05",
+                    content: "Scholarship application deadline extended to Nov 10th. Submit your forms to the admin office.",
+                    contact: "scholarships@college.edu"
+                }
+            ],
+            opportunity: [
+                {
+                    id: 3,
+                    title: "Art Competition - $500 Prize",
+                    date: "2023-11-15",
+                    content: "Annual college art competition. Theme: 'Future Visions'. Submit entries by Nov 15th.",
+                    contact: "artclub@college.edu"
+                },
+                {
+                    id: 4,
+                    title: "Summer Internship Applications Open",
+                    date: "2023-11-30",
+                    content: "Tech company internships available for CS students. Apply through career portal.",
+                    contact: "careers@college.edu"
+                }
+            ],
+            academic: [
+                {
+                    id: 5,
+                    title: "Midterm Exam Schedule Posted",
+                    date: "2023-11-08",
+                    content: "Check the student portal for your midterm exam schedule. Contact your professor with conflicts.",
+                    contact: "exams@college.edu"
+                },
+                {
+                    id: 6,
+                    title: "Research Paper Workshop",
+                    date: "2023-10-30",
+                    content: "Learn how to write effective research papers. Wednesday at 3 PM in Hall B.",
+                    contact: "writingcenter@college.edu"
+                }
+            ],
+            social: [
+                {
+                    id: 7,
+                    title: "Halloween Party - Friday Night",
+                    date: "2023-10-27",
+                    content: "Costume party at the student center. Free food and drinks for attendees!",
+                    contact: "events@college.edu"
+                },
+                {
+                    id: 8,
+                    title: "Study Group Forming for Calculus",
+                    date: "2023-10-29",
+                    content: "Looking for 3-4 students to form a study group for Calculus 201. Meeting twice a week.",
+                    contact: "john.d@student.college.edu"
+                }
+            ],
+            creative: [
+                {
+                    id: 9,
+                    title: "Photography Exhibition Submissions",
+                    date: "2023-11-20",
+                    content: "Submit your best campus photography for the annual exhibition. Digital and print accepted.",
+                    contact: "photoclub@college.edu"
+                },
+                {
+                    id: 10,
+                    title: "Creative Writing Workshop",
+                    date: "2023-11-02",
+                    content: "Join published author Maria Gonzalez for a creative writing workshop. All skill levels welcome.",
+                    contact: "englishdept@college.edu"
+                }
+            ],
+            fun: [
+                {
+                    id: 11,
+                    title: "Meme of the Week Contest",
+                    date: "2023-10-29",
+                    content: "Submit your funniest college-related meme. Winner gets a $50 gift card!",
+                    contact: "funclub@college.edu"
+                },
+                {
+                    id: 12,
+                    title: "Birthday Wishes for Prof. Johnson",
+                    date: "2023-10-28",
+                    content: "Sign the digital card for Prof. Johnson's birthday! He turns 60 on Saturday.",
+                    contact: "studentcouncil@college.edu"
+                }
+            ]
+        };
+
+        // Initialize the board with sample notices
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load sample notices
+            for (const category in sampleNotices) {
+                const container = document.getElementById(`${category}-notices`);
+                sampleNotices[category].forEach(notice => {
+                    container.appendChild(createNoticeElement(notice));
+                });
+            }
+
+            // Set min date for deadline input to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+        });
+
+        // Create a notice element
+        function createNoticeElement(notice) {
+            const noticeEl = document.createElement('div');
+            noticeEl.className = 'notice';
+            noticeEl.dataset.id = notice.id;
+            
+            // Add pin
+            const pin = document.createElement('div');
+            pin.className = 'pin';
+            noticeEl.appendChild(pin);
+            
+            // Format date for display
+            const formattedDate = new Date(notice.date).toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            noticeEl.innerHTML += `
+                <div class="notice-title">
+                    <span>${notice.title}</span>
+                    <button class="delete-btn" onclick="deleteNotice(${notice.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="notice-date">Due: ${formattedDate}</div>
+                <div class="notice-content">${notice.content}</div>
+                <div class="notice-actions">
+                    <div class="notice-contact">
+                        <i class="fas fa-envelope"></i> ${notice.contact}
+                    </div>
+                    <button class="save-btn" onclick="saveNotice(${notice.id})">
+                        <i class="far fa-bookmark"></i> Save
+                    </button>
+                </div>
+            `;
+            
+            // Add delete button styling
+            const deleteBtn = noticeEl.querySelector('.delete-btn');
+            deleteBtn.style.background = 'none';
+            deleteBtn.style.border = 'none';
+            deleteBtn.style.color = '#ff4757';
+            deleteBtn.style.cursor = 'pointer';
+            deleteBtn.style.fontSize = '1rem';
+            
+            // Add save button styling
+            const saveBtn = noticeEl.querySelector('.save-btn');
+            saveBtn.style.background = 'none';
+            saveBtn.style.border = 'none';
+            saveBtn.style.color = '#3498db';
+            saveBtn.style.cursor = 'pointer';
+            saveBtn.style.fontSize = '0.9rem';
+            saveBtn.style.display = 'flex';
+            saveBtn.style.alignItems = 'center';
+            saveBtn.style.gap = '5px';
+            
+            return noticeEl;
+        }
+
+        // Handle form submission
+        document.getElementById('noticeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const contact = document.getElementById('contact').value;
+            const date = document.getElementById('date').value;
+            const content = document.getElementById('content').value;
+            
+            if (!title || !category || !contact || !content) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Create new notice object
+            const newNotice = {
+                id: Date.now(), // Simple unique ID
+                title,
+                date: date || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default to 7 days from now
+                content,
+                contact
+            };
+            
+            // Add to the appropriate section
+            const container = document.getElementById(`${category}-notices`);
+            container.prepend(createNoticeElement(newNotice));
+            
+            // Show success message
+            alert('Notice added successfully!');
+            
+            // Reset form
+            this.reset();
+            
+            // Reset min date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+        });
+
+        // Delete a notice
+        function deleteNotice(id) {
+            if (confirm('Are you sure you want to delete this notice?')) {
+                const noticeEl = document.querySelector(`.notice[data-id="${id}"]`);
+                if (noticeEl) {
+                    noticeEl.remove();
+                }
+            }
+        }
+
+        // Save a notice (simulate bookmarking)
+        function saveNotice(id) {
+            const noticeEl = document.querySelector(`.notice[data-id="${id}"]`);
+            const title = noticeEl.querySelector('.notice-title span').textContent;
+            
+            // Change button appearance to show it's saved
+            const saveBtn = noticeEl.querySelector('.save-btn');
+            saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+            saveBtn.style.color = '#2ecc71';
+            saveBtn.onclick = null;
+            
+            // Show confirmation
+            alert(`Notice "${title}" has been saved to your bookmarks!`);
+        }
+
+        // Interactive elements functions
+        function openPoll() {
+            const question = "What should be the theme for next month's notice board?";
+            const options = ["Future Tech", "Sustainability", "Art & Culture", "Health & Wellness"];
+            
+            let pollHTML = `<h3>${question}</h3>`;
+            options.forEach((option, index) => {
+                pollHTML += `
+                    <div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                        <input type="radio" id="option${index}" name="poll" value="${option}">
+                        <label for="option${index}">${option}</label>
+                    </div>
+                `;
+            });
+            
+            pollHTML += `<button onclick="submitPoll()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Vote</button>`;
+            
+            showModal("Weekly Poll", pollHTML);
+        }
+
+        function openSkillShare() {
+            const content = `
+                <h3>Skill Share Board</h3>
+                <p>Offer or request skills from fellow students</p>
+                
+                <div style="margin: 20px 0;">
+                    <h4>Offered Skills:</h4>
+                    <ul>
+                        <li>Web Development (John - CS Major)</li>
+                        <li>Graphic Design (Maria - Art Dept)</li>
+                        <li>Spanish Tutoring (Carlos - Spanish Club)</li>
+                    </ul>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <h4>Requested Skills:</h4>
+                    <ul>
+                        <li>Math Tutoring for Calculus (First year students)</li>
+                        <li>Guitar Lessons (Beginner level)</li>
+                        <li>Resume Review (Seniors)</li>
+                    </ul>
+                </div>
+                
+                <button onclick="addSkillShare()" style="background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Add Your Skill/Request</button>
+            `;
+            
+            showModal("Skill Share", content);
+        }
+
+        function openCollaboration() {
+            const content = `
+                <h3>Collaboration Corner</h3>
+                <p>Find partners for your projects and ideas</p>
+                
+                <div style="margin: 20px 0;">
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4>Mobile App Development</h4>
+                        <p>Looking for UI/UX designer and backend developer for a campus navigation app.</p>
+                        <p><strong>Contact:</strong> alex@student.college.edu</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4>Environmental Research Project</h4>
+                        <p>Need biology and chemistry students for water quality testing project.</p>
+                        <p><strong>Contact:</strong> greenclub@college.edu</p>
+                    </div>
+                </div>
+                
+                <button onclick="addCollaboration()" style="background: #9b59b6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Post Collaboration Request</button>
+            `;
+            
+            showModal("Collaboration Corner", content);
+        }
+
+        function openChallenge() {
+            const content = `
+                <h3>Weekly Creative Challenge</h3>
+                <p><strong>Theme: "Autumn on Campus"</strong></p>
+                
+                <p>Submit a photo, drawing, poem, or short story inspired by autumn on our campus.</p>
+                
+                <div style="margin: 20px 0;">
+                    <h4>How to Participate:</h4>
+                    <ol>
+                        <li>Create your work based on the theme</li>
+                        <li>Submit by Friday at 5 PM</li>
+                        <li>Winners announced every Monday</li>
+                    </ol>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <h4>Prizes:</h4>
+                    <ul>
+                        <li>1st Place: $100 gift card + Feature on board</li>
+                        <li>2nd Place: $50 gift card</li>
+                        <li>3rd Place: College merchandise package</li>
+                    </ul>
+                </div>
+                
+                <button onclick="joinChallenge()" style="background: #e67e22; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Join Challenge</button>
+            `;
+            
+            showModal("Weekly Challenge", content);
+        }
+
+        function submitPoll() {
+            const selected = document.querySelector('input[name="poll"]:checked');
+            if (selected) {
+                alert(`Thank you for voting for "${selected.value}"!`);
+                closeModal();
+            } else {
+                alert('Please select an option before voting.');
+            }
+        }
+
+        function addSkillShare() {
+            alert('Skill share form will open in a new window. (This is a demo)');
+        }
+
+        function addCollaboration() {
+            alert('Collaboration request form will open. (This is a demo)');
+        }
+
+        function joinChallenge() {
+            alert('You have joined the weekly challenge! Check your email for submission details.');
+            closeModal();
+        }
+
+        // Modal functions
+        function showModal(title, content) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('customModal');
+            if (existingModal) {
+                document.body.removeChild(existingModal);
+            }
+            
+            const modal = document.createElement('div');
+            modal.id = 'customModal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.padding = '30px';
+            modalContent.style.borderRadius = '15px';
+            modalContent.style.maxWidth = '500px';
+            modalContent.style.width = '90%';
+            modalContent.style.maxHeight = '80vh';
+            modalContent.style.overflowY = 'auto';
+            
+            modalContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">${title}</h2>
+                    <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #7f8c8d;">&times;</button>
+                </div>
+                <div>${content}</div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+    </script>
 </body>
 </html>
