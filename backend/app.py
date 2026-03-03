@@ -188,9 +188,6 @@ def static_assets(asset_path: str) -> tuple:
 
 @app.post('/register')
 def register() -> tuple:
-    if not mongo_enabled:
-        return jsonify({'error': 'MongoDB is unavailable. Registration requires database storage.'}), 503
-
     payload = request.get_json(silent=True) or {}
     full_name = (payload.get('fullName') or '').strip()
     username = (payload.get('username') or '').strip().lower()
@@ -342,9 +339,6 @@ def update_candidate(candidate_id: str) -> tuple:
 
 @app.post('/votes')
 def cast_vote() -> tuple:
-    if not mongo_enabled:
-        return jsonify({'error': 'MongoDB is unavailable. Voting requires database storage.'}), 503
-
     if not get_election_status():
         return jsonify({'error': 'Election is currently closed by admin.'}), 403
 
