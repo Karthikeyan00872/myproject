@@ -1,3 +1,18 @@
+const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+if (currentUser.role !== 'admin') {
+    alert('Admin access required.');
+    window.location.href = 'admin-login.html';
+}
+
+const logoutBtn = document.getElementById('adminLogoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        localStorage.removeItem('currentUser');
+        window.location.href = 'admin-login.html';
+    });
+}
+
 const candidateForm = document.getElementById('candidateForm');
 const adminCandidateList = document.getElementById('adminCandidateList');
 const adminStatus = document.getElementById('adminStatus');
