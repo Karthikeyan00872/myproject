@@ -1,14 +1,14 @@
-const loginForm = document.getElementById('loginForm');
+const adminLoginForm = document.getElementById('adminLoginForm');
 
-if (loginForm) {
-    loginForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
+if (adminLoginForm) {
+    adminLoginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
         try {
-            const response = await fetch('/login', {
+            const response = await fetch('/admin/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -16,19 +16,13 @@ if (loginForm) {
 
             const result = await response.json();
             if (!response.ok) {
-                alert(result.error || 'Invalid username or password!');
-                return;
-            }
-
-            if (result.user?.role === 'admin') {
-                alert('This is voter login. Please use the Admin Login page.');
-                window.location.href = 'admin-login.html';
+                alert(result.error || 'Admin login failed.');
                 return;
             }
 
             localStorage.setItem('currentUser', JSON.stringify(result.user));
-            alert('Login successful! Redirecting to Vote Now page...');
-            window.location.href = 'votenow.html';
+            alert('Admin login successful.');
+            window.location.href = 'admin.html';
         } catch (error) {
             alert('Unable to login right now. Please try again later.');
             console.error(error);
